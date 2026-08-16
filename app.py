@@ -22,7 +22,7 @@ menu = st.sidebar.selectbox("Choose a Section", ["Home", "Asanas for Weight Gain
 
 if menu == "Home":
     st.subheader("Welcome to Your Personal Yoga Journey!")
-    st.image("https://images.unsplash.com/photo-1544367567-0f2fcb009e0b", use_column_width=True)
+    
     st.write("""
     Unlike weight loss apps focused purely on calorie deficit, **Weight Gain Yoga** focuses on:
     * Improving overall digestion and nutrient absorption.
