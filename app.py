@@ -1,5 +1,4 @@
 import streamlit as st
-import datetime
 
 # Page Configuration
 st.set_page_config(page_title="Yoga App", layout="centered")
@@ -19,7 +18,7 @@ def prev_step():
         st.session_state.step -= 1
         st.rerun()
 
-# --- SLIDE 1: Welcome (Photo Removed) ---
+# --- SLIDE 1: Welcome ---
 if st.session_state.step == 1:
     st.markdown("<h1 style='text-align: center; margin-top: 50px;'>Yoga For Weight Loss</h1>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center; color: gray;'>Yoga for better and healthy life</h3>", unsafe_allow_html=True)
@@ -27,7 +26,7 @@ if st.session_state.step == 1:
     if st.button("Get Started", use_container_width=True):
         next_step()
 
-# --- SLIDE 2: Move Gently (Multiple Options Selectable) ---
+# --- SLIDE 2: Move Gently (Multiple Checkboxes) ---
 elif st.session_state.step == 2:
     st.markdown("<h2 style='text-align: center;'>Move Gently, Improve Rapidly</h2>", unsafe_allow_html=True)
     st.write("---")
@@ -44,7 +43,13 @@ elif st.session_state.step == 2:
     if st.button("Next", use_container_width=True):
         next_step()
 
-# --- SLIDE 3 (Placeholder / Skipped to match your flow) ---
+# --- SLIDE 3: Additional Preferences ---
+elif st.session_state.step == 3:
+    st.markdown("<h2 style='text-align: center;'>Tell us a bit more</h2>", unsafe_allow_html=True)
+    st.write("---")
+    st.session_state.data['pace'] = st.radio("Preferred workout pace:", ["Gentle & Relaxing", "Moderate", "Dynamic & Fast"])
+    if st.button("Next", use_container_width=True):
+        next_step()
 
 # --- SLIDE 4: Main Goal ---
 elif st.session_state.step == 4:
@@ -200,4 +205,3 @@ if st.session_state.step > 1:
     st.write("---")
     if st.button("⬅ Back"):
         prev_step()
-
