@@ -7,7 +7,7 @@ st.set_page_config(page_title="Wellness Pro App", page_icon="🧘‍♀️", lay
 st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🧘‍♀️ Wellness Pro Guide</h1>", unsafe_allow_html=True)
 
 # Tabs for Navigation
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Personalized Plan", "Water & Alarm", "Workout Timer", "Before & After", "AI Video & Audio"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Personalized Plan", "Schedule & Tracker", "Workout Timer", "Progress & Comparison", "AI Video & Audio"])
 
 with tab1:
     st.subheader("Get Your Custom Plan & Diet Chart")
@@ -62,35 +62,37 @@ with tab1:
             """)
 
 with tab2:
-    st.subheader("💧 Water Tracker & ⏰ Custom Yoga Alarm")
+    st.subheader("📅 Weekly Yoga Schedule & Daily Tracker")
+    st.write("Follow this routine day-by-day. Check the box once you complete your daily exercise!")
     
-    # Water Tracker
-    if 'water' not in st.session_state: st.session_state.water = 0
-    st.write(f"### Goal: 3 Liters | Progress: {st.session_state.water/1000:.1f} Liters")
-    col_w1, col_w2 = st.columns(2)
-    if col_w1.button("Add 250ml Water"): st.session_state.water += 250
-    if col_w2.button("Reset Tracker"): st.session_state.water = 0
-    st.progress(min(st.session_state.water / 3000, 1.0))
-    
-    st.divider()
-    
-    # Alarm & Schedule Section with AM/PM format support
-    st.subheader("🔔 Set Daily Yoga Alarm & Schedule")
-    
-    col_a1, col_a2 = st.columns(2)
-    with col_a1:
-        alarm_hour = st.selectbox("Hour", [str(i) for i in range(1, 13)], index=5) # Default 6
-        alarm_minute = st.selectbox("Minute", ["00", "15", "30", "45"])
-        ampm = st.selectbox("AM / PM", ["AM", "PM"])
-    with col_a2:
-        st.write("")
-        st.write("")
-        # Client selects workout vs rest days manually here
-        workout_days = st.multiselect("Select Yoga Days:", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], default=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"])
-        rest_days = st.multiselect("Select Rest Days:", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], default=["Sunday"])
+    # Initialize tracker state
+    if 'days_tracked' not in st.session_state:
+        st.session_state.days_tracked = 0
 
-    if st.button("Save My Custom Schedule"):
-        st.success(f"Alarm set for {alarm_hour}:{alarm_minute} {ampm}!\nYoga Days: {', '.join(workout_days)} | Rest Days: {', '.join(rest_days)}")
+    schedule = [
+        ("Day 1", "Surya Namaskar & Tadasana", False),
+        ("Day 2", "Bhujangasana & Vajrasana", False),
+        ("Day 3", "REST DAY (No Yoga)", True),
+        ("Day 4", "Kapalbhati Pranayama & Dhanurasana", False),
+        ("Day 5", "Surya Namaskar & Core Stretching", False),
+        ("Day 6", "REST DAY (No Yoga)", True),
+        ("Day 7", "Light Meditation & Breathing Exercises", False),
+    ]
+
+    completed_count = 0
+    for day, asans, is_rest in schedule:
+        st.markdown(f"**{day}:** {asans}")
+        if not is_rest:
+            key_name = f"chk_{day}"
+            if st.checkbox(f"Mark {day} Exercise Done", key=key_name):
+                completed_count += 1
+        else:
+            st.info("🛋️ Relax and recover today!")
+        st.markdown("---")
+    
+    # Store total completed workout days
+    st.session_state.days_tracked = completed_count
+    st.write(f"### Total Workout Days Completed: {st.session_state.days_tracked} / 5")
 
 with tab3:
     st.subheader("⏱️ Daily Workout Timer")
@@ -104,40 +106,51 @@ with tab3:
             st.success("Workout Complete!")
 
 with tab4:
-    st.subheader("📸 Side-by-Side Before & After Progress")
-    st.write("First day practice photo (Before) aur 1 mahine baad ki photo (After) yahan upload karke apni progress compare karein:")
+    st.subheader("📸 Progress & Before/After Comparison")
     
-    col_p1, col_p2 = st.columns(2)
-    with col_p1:
-        st.markdown("#### 1️⃣ First Day (Before)")
-        before_img = st.file_uploader("Upload First Day Photo", type=['jpg', 'png', 'jpeg'], key="b")
-        if before_img: st.image(before_img, caption="Day 1", use_column_width=True)
-    with col_p2:
-        st.markdown("#### 2️⃣ After 1 Month (Progress)")
-        after_img = st.file_uploader("Upload After 1 Month Photo", type=['jpg', 'png', 'jpeg'], key="a")
-        if after_img: st.image(after_img, caption="After 1 Month", use_column_width=True)
+    # Always allow uploading 'Before' photo on Day 1
+    st.markdown("#### 1️⃣ First Day Photo (Before)")
+    before_img = st.file_uploader("Upload your Day 1 photo", type=['jpg', 'png', 'jpeg'], key="b_img")
+    if before_img:
+        st.image(before_img, caption="Day 1 (Before)", width=300)
+    
+    st.divider()
+    
+    # Check if 30 days/workouts are completed to unlock After photo
+    if st.session_state.get('days_tracked', 0) >= 5: # Setting threshold (can be adjusted to 30 when using real dates)
+        st.success("🎉 Congratulations! You have unlocked your 30-Day Progress Comparison!")
+        st.markdown("#### 2️⃣ After 30 Days Photo (After)")
+        after_img = st.file_uploader("Upload your After 30 Days photo", type=['jpg', 'png', 'jpeg'], key="a_img")
         
-    if before_img and after_img:
-        st.balloons()
-        st.success("Amazing transformation progress! Keep it up!")
+        if before_img and after_img:
+            st.markdown("### 🔄 Side-by-Side Comparison")
+            col_c1, col_c2 = st.columns(2)
+            with col_c1:
+                st.image(before_img, caption="Before", use_column_width=True)
+            with col_c2:
+                st.image(after_img, caption="After 30 Days", use_column_width=True)
+            st.balloons()
+            st.success("Amazing transformation! Look at your incredible progress.")
+    else:
+        st.info("🔒 **After 30 Days Photo is locked!** Complete at least 5 workout tracking checkboxes in the 'Schedule & Tracker' tab to unlock your comparison view.")
 
 with tab5:
     st.subheader("🎥 AI Video & Audio Guided Yoga")
     st.markdown("### 🌊 Calm Ocean & Relaxation Music")
-    st.write("Play button dabakar background music chalu karein:")
-    st.audio("https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=gentle-waves-ambient-111242.mp3", format="audio/mp3")
+    st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", format="audio/mp3")
     
     st.markdown("---")
     selected_asan = st.selectbox("Choose Asan to Learn:", ["Bhujangasana (Cobra Pose)", "Vajrasana (Thunderbolt Pose)", "Kapalbhati Pranayama"])
     
     if selected_asan == "Bhujangasana (Cobra Pose)":
         st.image("https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600", caption="Bhujangasana Guide")
-        st.info("🗣️ **AI Voice Guide:** Pait ke bal let jayein, dono hath shoulders ke paas rakhein, aur saans lete huye upper body ko dheere-dheere upar uthayein.")
+        st.info("🗣️ **AI Voice Guide:** Lie down on your stomach, place both hands near your shoulders, and inhale while lifting your upper body gently.")
     elif selected_asan == "Vajrasana (Thunderbolt Pose)":
         st.image("https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600", caption="Vajrasana Guide")
-        st.info("🗣️ **AI Voice Guide:** Ghutno par baith jayein, hips ko heels par tikayein, aur peeth seedhi karke lambi saans lein.")
+        st.info("🗣️ **AI Voice Guide:** Sit on your knees, rest your hips on your heels, keep your spine straight, and take deep breaths.")
     else:
         st.image("https://images.unsplash.com/photo-1599447421416-3414500d18a5?w=600", caption="Kapalbhati Guide")
-        st.info("🗣️ **AI Voice Guide:** Palthi maarkar comfortable baithein, ankhein band karein, aur pet se saans ko forceful tarike se bahar fekein.")
+        st.info("🗣️ **AI Voice Guide:** Sit comfortably with cross legs, close your eyes, and forcefully exhale air through your stomach.")
 
 st.sidebar.info("Stay consistent, stay healthy! 🌿")
+
