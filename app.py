@@ -22,7 +22,6 @@ menu = st.sidebar.selectbox("Choose a Section", ["Home", "Asanas for Weight Gain
 
 if menu == "Home":
     st.subheader("Welcome to Your Personal Yoga Journey!")
-    
     st.write("""
     Unlike weight loss apps focused purely on calorie deficit, **Weight Gain Yoga** focuses on:
     * Improving overall digestion and nutrient absorption.
@@ -32,14 +31,15 @@ if menu == "Home":
 
 elif menu == "Asanas for Weight Gain":
     st.subheader("🌟 Recommended Asanas")
-    
+
     asanas = {
         "1. Bhujangasana (Cobra Pose)": "Strengthens the spine, opens the chest, and improves metabolism and digestion.",
         "2. Sarvangasana (Shoulder Stand)": "Stimulates the thyroid gland which regulates metabolism and body weight.",
-        "3. Pachimottanasana (Seated Forward Bend)": "Massages abdominal organs, improves appetite, and relieves stress.",
-        "4. Vajrasana (Thunderbolt Pose)": "Best pose to practice right after meals to boost digestion and nutrient uptake."
+        "3. Paschimottanasana (Seated Forward Bend)": "Massages abdominal organs, improves appetite, and relieves stress.",
+        "4. Vajrasana (Thunderbolt Pose)": "Best pose to practice right after meals to boost digestion and nutrient uptake.",
+        "5. Trikonasana (Triangle Pose)": "Improves balance, stretches the body, and helps build stamina and strength."
     }
-    
+
     for title, desc in asanas.items():
         with st.container():
             st.markdown(f"### {title}")
@@ -60,12 +60,12 @@ elif menu == "BMI Calculator":
     st.subheader("📊 Check Your Body Mass Index (BMI)")
     weight = st.number_input("Enter your weight (kg)", min_value=20.0, max_value=200.0, value=50.0)
     height = st.number_input("Enter your height (cm)", min_value=100.0, max_value=250.0, value=160.0)
-    
+
     if st.button("Calculate BMI"):
         height_m = height / 100
         bmi = weight / (height_m ** 2)
         st.success(f"Your BMI is: **{bmi:.2f}**")
-        
+
         if bmi < 18.5:
             st.warning("You are in the underweight category. This app's yoga routines will help you gain healthy weight!")
         elif 18.5 <= bmi < 24.9:
