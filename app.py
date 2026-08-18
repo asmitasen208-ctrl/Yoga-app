@@ -1,106 +1,84 @@
 import streamlit as st
+import time
 
 # App Configuration
-st.set_page_config(page_title="Personalized Yoga & Diet Guide", page_icon="🧘‍♀️", layout="centered")
+st.set_page_config(page_title="Wellness Pro App", page_icon="🧘‍♀️", layout="centered")
 
-st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🧘‍♀️ Personalized Yoga & Diet Guide</h1>", unsafe_allow_html=True)
-st.write("Enter your details below to get your custom health, meal plan, and yoga guide:")
+st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🧘‍♀️ Wellness Pro Guide</h1>", unsafe_allow_html=True)
 
-# User Inputs
-col1, col2 = st.columns(2)
-with col1:
-    gender = st.selectbox("Gender", ["Female", "Male"])
-    age = st.number_input("Age", min_value=10, max_value=100, value=25)
-with col2:
-    weight = st.number_input("Weight (kg)", min_value=20.0, max_value=200.0, value=50.0)
-    height = st.number_input("Height (cm)", min_value=100.0, max_value=250.0, value=160.0)
+# Tabs for Navigation
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Personalized Plan", "Water Tracker", "Workout Timer", "Progress Log", "AI Video & Audio Guide"])
 
-if st.button("✨ Generate My Complete Plan"):
-    height_m = height / 100
-    bmi = weight / (height_m ** 2)
+with tab1:
+    st.subheader("Get Your Custom Plan")
+    col1, col2 = st.columns(2)
+    with col1:
+        gender = st.selectbox("Gender", ["Female", "Male"])
+        age = st.number_input("Age", 10, 100, 25)
+    with col2:
+        weight = st.number_input("Weight (kg)", 20.0, 200.0, 50.0)
+        height = st.number_input("Height (cm)", 100.0, 250.0, 160.0)
+
+    if st.button("✨ Generate Plan"):
+        bmi = weight / ((height/100) ** 2)
+        st.write(f"### Your BMI: {bmi:.1f}")
+        st.success("Follow these daily for a healthy life!")
+
+with tab2:
+    st.subheader("💧 Daily Water Tracker")
+    if 'water' not in st.session_state: st.session_state.water = 0
+    st.write(f"### Goal: 3 Liters | Progress: {st.session_state.water/1000:.1f} Liters")
     
-    min_ideal_weight = 18.5 * (height_m ** 2)
-    max_ideal_weight = 24.9 * (height_m ** 2)
+    col_w1, col_w2 = st.columns(2)
+    if col_w1.button("Add 250ml Water"): st.session_state.water += 250
+    if col_w2.button("Reset Tracker"): st.session_state.water = 0
+    st.progress(min(st.session_state.water / 3000, 1.0))
+
+with tab3:
+    st.subheader("⏱️ Daily Workout Timer")
+    duration = st.slider("Select Duration (minutes)", 5, 60, 15)
+    if st.button("Start Timer"):
+        with st.empty():
+            for s in range(duration * 60, 0, -1):
+                mins, secs = divmod(s, 60)
+                st.markdown(f"<h2 style='text-align: center;'>Remaining: {mins:02d}:{secs:02d}</h2>", unsafe_allow_html=True)
+                time.sleep(1)
+            st.success("Workout Complete!")
+
+with tab4:
+    st.subheader("📸 Before & After Progress")
+    col_p1, col_p2 = st.columns(2)
+    with col_p1:
+        before_img = st.file_uploader("Upload 'Before' Photo", type=['jpg', 'png', 'jpeg'], key="b")
+        if before_img: st.image(before_img, caption="Before", use_column_width=True)
+    with col_p2:
+        after_img = st.file_uploader("Upload 'After' Photo", type=['jpg', 'png', 'jpeg'], key="a")
+        if after_img: st.image(after_img, caption="After", use_column_width=True)
+    if before_img and after_img:
+        st.balloons()
+        st.success("Great job on your fitness journey!")
+
+with tab5:
+    st.subheader("🎥 AI Video & Audio Guided Yoga")
+    st.write("Yahan aap asan dekh kar follow kar sakte hain aur background music play kar sakte hain:")
     
-    st.divider()
-    st.subheader(f"📊 Your BMI Result: {bmi:.1f}")
-
-    if bmi < 18.5:
-        diff = min_ideal_weight - weight
-        st.warning(f"You are Underweight by approximately **{diff:.1f} kg**.")
-        
-        st.markdown("### ⏰ Yoga Timing")
-        st.info("Best time: Early morning on an empty stomach, or evening (4 hours after a heavy meal).")
-        
-        st.markdown("### 🌟 Recommended Yoga Asanas")
-        
-        col_y1, col_y2 = st.columns(2)
-        with col_y1:
-            st.image("https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400", caption="Bhujangasana (Cobra Pose)")
-            st.write("**Bhujangasana:** Improves metabolism and strengthens the spine.")
-        with col_y2:
-            st.image("https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400", caption="Vajrasana (Thunderbolt Pose)")
-            st.write("**Vajrasana:** Practice for 5-10 mins after meals to boost digestion.")
-
-        st.markdown("### 🍽️ Daily Meal Plan (Surplus Diet Chart)")
-        st.markdown("""
-        | Meal Time | What to Eat |
-        | :--- | :--- |
-        | **Breakfast** | Stuffed parathas with butter/curd, full-cream milk, and a handful of dry fruits. |
-        | **Lunch** | Multi-grain chapati, heavy dal/paneer curry, rice, and a bowl of curd. |
-        | **Dinner** | Nutritious khichdi or paneer sabzi with roti, followed by warm milk with ghee. |
-        """)
-
-    elif 18.5 <= bmi < 24.9:
-        st.success("Congratulations! You have a Normal and Healthy weight.")
-        
-        st.markdown("### ⏰ Yoga Timing")
-        st.info("Best time: Early morning to maintain daily flexibility and freshness.")
-        
-        st.markdown("### 🌟 Recommended Yoga Asanas")
-        
-        col_y1, col_y2 = st.columns(2)
-        with col_y1:
-            st.image("https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=400", caption="Surya Namaskar")
-            st.write("**Surya Namaskar:** Great for overall body stamina and flexibility.")
-        with col_y2:
-            st.image("https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=400", caption="Tadasana (Mountain Pose)")
-            st.write("**Tadasana:** Excellent for posture and body balance.")
-
-        st.markdown("### 🍽️ Daily Meal Plan (Balanced Diet Chart)")
-        st.markdown("""
-        | Meal Time | What to Eat |
-        | :--- | :--- |
-        | **Breakfast** | Oats/Poha, sprouts, or eggs with fresh fruit juice. |
-        | **Lunch** | Balanced portion of chapati, seasonal vegetables, dal, and fresh salad. |
-        | **Dinner** | Light dinner including vegetable soup or light dal-roti (eat 2 hours before sleep). |
-        """)
-
+    # Background Music (Royalty-free relaxing flute/meditation music)
+    st.markdown("### 🎵 Relaxing Background Music")
+    st.audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", format="audio/mp3")
+    
+    st.markdown("---")
+    st.markdown("### 🧘‍♂️ Asan Demonstration & Voice Steps")
+    
+    selected_asan = st.selectbox("Choose Asan to Learn:", ["Bhujangasana (Cobra Pose)", "Vajrasana (Thunderbolt Pose)", "Kapalbhati Pranayama"])
+    
+    if selected_asan == "Bhujangasana (Cobra Pose)":
+        st.image("https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600", caption="Bhujangasana Guide")
+        st.info("🗣️ **AI Voice Guide:** Pait ke bal let jayein, dono hath shoulders ke paas rakhein, aur saans lete huye upper body ko dheere-dheere upar uthayein.")
+    elif selected_asan == "Vajrasana (Thunderbolt Pose)":
+        st.image("https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600", caption="Vajrasana Guide")
+        st.info("🗣️ **AI Voice Guide:** Ghutno par baith jayein, hips ko heels par tikayein, aur peeth seedhi karke lambi saans lein.")
     else:
-        diff = weight - max_ideal_weight
-        st.info(f"You are Overweight by approximately **{diff:.1f} kg**.")
-        
-        st.markdown("### ⏰ Yoga Timing")
-        st.info("Best time: Morning empty stomach to activate metabolism and burn fat.")
-        
-        st.markdown("### 🌟 Recommended Yoga Asanas")
-        
-        col_y1, col_y2 = st.columns(2)
-        with col_y1:
-            st.image("https://images.unsplash.com/photo-1599447421416-3414500d18a5?w=400", caption="Pranayama / Breathing")
-            st.write("**Kapalbhati:** 10-15 minutes daily to boost metabolism and burn belly fat.")
-        with col_y2:
-            st.image("https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400", caption="Dhanurasana (Bow Pose)")
-            st.write("**Dhanurasana:** Stretches abdominal organs and reduces fat.")
+        st.image("https://images.unsplash.com/photo-1599447421416-3414500d18a5?w=600", caption="Kapalbhati Guide")
+        st.info("🗣️ **AI Voice Guide:** Palthi maarkar comfortable baithein, ankhein band karein, aur pet se saans ko forceful tarike se bahar fekein.")
 
-        st.markdown("### 🍽️ Daily Meal Plan (Fat-Loss Diet Chart)")
-        st.markdown("""
-        | Meal Time | What to Eat |
-        | :--- | :--- |
-        | **Breakfast** | Warm lemon-honey water, green tea, and sprouted moong or egg whites. |
-        | **Lunch** | Large bowl of salad, 1-2 thin chapati, dal, and green leafy vegetables. |
-        | **Dinner** | Light vegetable soup or boiled/roasted veggies (finish eating before 8 PM). |
-        """)
-
-st.sidebar.markdown("### About App")
-st.sidebar.info("This app provides clean schedules, visual yoga guides, and diet charts tailored to your BMI.")
+st.sidebar.info("Stay consistent, stay healthy! 🌿")
