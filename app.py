@@ -12,28 +12,39 @@ if 'data' not in st.session_state:
 
 def next_step():
     st.session_state.step += 1
+    st.rerun()
 
 def prev_step():
     if st.session_state.step > 1:
         st.session_state.step -= 1
+        st.rerun()
 
-# --- SLIDE 1: Welcome ---
+# --- SLIDE 1: Welcome (Photo Removed) ---
 if st.session_state.step == 1:
-    st.image("https://img.freepik.com/free-photo/young-woman-practicing-yoga-beach_23-2148759530.jpg", use_container_width=True)
-    st.markdown("<h1 style='text-align: center;'>Yoga For Weight Loss</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; margin-top: 50px;'>Yoga For Weight Loss</h1>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center; color: gray;'>Yoga for better and healthy life</h3>", unsafe_allow_html=True)
+    st.write("")
     if st.button("Get Started", use_container_width=True):
         next_step()
 
-# --- SLIDE 2: Move Gently ---
+# --- SLIDE 2: Move Gently (Multiple Options Selectable) ---
 elif st.session_state.step == 2:
     st.markdown("<h2 style='text-align: center;'>Move Gently, Improve Rapidly</h2>", unsafe_allow_html=True)
     st.write("---")
+    st.write("What would you like to focus on? (Select as many as you want)")
+    
     options = ["Improve Health", "Sleep Better", "Clear Mind", "Stay Young"]
-    selected_option = st.radio("What would you like to focus on?", options)
+    selected_focus = []
+    for opt in options:
+        if st.checkbox(opt, key=f"focus_{opt}"):
+            selected_focus.append(opt)
+            
+    st.session_state.data['focus'] = selected_focus
+    
     if st.button("Next", use_container_width=True):
-        st.session_state.data['focus'] = selected_option
         next_step()
+
+# --- SLIDE 3 (Placeholder / Skipped to match your flow) ---
 
 # --- SLIDE 4: Main Goal ---
 elif st.session_state.step == 4:
@@ -151,7 +162,6 @@ elif st.session_state.step == 14:
     st.write("---")
     st.subheader("Training Schedule (September)")
     
-    # Interactive calendar simulation for day selection
     selected_day = st.selectbox("Select date to view routine:", [18, 19, 20, 21, 22, 23, 24], index=0)
     
     if selected_day == 18:
@@ -185,9 +195,9 @@ elif st.session_state.step == 14:
     else:
         st.info(f"Routine for September {selected_day} will unlock sequentially. Please check Day 1 (18th).")
 
-# Back button navigation utility at the bottom
+# Back button utility at the bottom
 if st.session_state.step > 1:
     st.write("---")
     if st.button("⬅ Back"):
         prev_step()
-        st.rerun()
+
