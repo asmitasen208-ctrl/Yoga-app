@@ -18,10 +18,11 @@ def prev_step():
         st.session_state.step -= 1
         st.rerun()
 
-# --- SLIDE 1: Welcome ---
+# --- SLIDE 1: Welcome (No Image, Styled Text) ---
 if st.session_state.step == 1:
-    st.markdown("<h1 style='text-align: center; margin-top: 50px;'>Yoga For Weight Loss</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center; color: gray;'>Yoga for better and healthy life</h3>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; margin-top: 60px; color: #2C3E50;'>Yoga For Weight Loss</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: #16A085; font-weight: bold;'>Yoga for better and healthy life</h3>", unsafe_allow_html=True)
+    st.write("")
     st.write("")
     if st.button("Get Started", use_container_width=True):
         next_step()
@@ -158,7 +159,7 @@ elif st.session_state.step == 13:
     if st.button("Next", use_container_width=True):
         next_step()
 
-# --- SLIDE 14: Training Schedule & Day 1 Plan ---
+# --- SLIDE 14: Training Schedule & Day 1 Plan (No Images, Rich Benefits List) ---
 elif st.session_state.step == 14:
     st.markdown("<h2 style='text-align: center;'>With your personalized Plan</h2>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>You'll be your target weight by Sep 14</h3>", unsafe_allow_html=True)
@@ -173,25 +174,21 @@ elif st.session_state.step == 14:
         st.markdown("### 🧘 Day 1 Workout Routine")
         
         exercises = [
-            {"name": "Seated Cat Cow", "duration": "00:50", "desc": "Improves spine flexibility and relieves back tension.", "img": "https://img.freepik.com/free-vector/woman-practicing-yoga-pose_23-2148530375.jpg"},
-            {"name": "Crescent Low Lunge Left", "duration": "00:40", "desc": "Stretches hips, thighs, and groin. Builds lower body strength.", "img": "https://img.freepik.com/free-vector/yoga-poses-collection_23-2148530377.jpg"},
-            {"name": "Half Locust Pose", "duration": "00:40", "desc": "Strengthens back muscles, glutes, and back of the arms and legs.", "img": "https://img.freepik.com/free-vector/woman-doing-cobra-yoga-pose_23-2148530378.jpg"},
-            {"name": "Downward Facing Dog With Bent Knees", "duration": "00:50", "desc": "Energizes the body, stretches shoulders, hamstrings, and calves.", "img": "https://img.freepik.com/free-vector/person-sitting-vajrasana-yoga-pose_23-2148530379.jpg"},
-            {"name": "Crescent Low Lunge Right", "duration": "00:40", "desc": "Balances right side body strength and hip openness.", "img": "https://img.freepik.com/free-vector/yoga-poses-collection_23-2148530377.jpg"},
-            {"name": "Bird Dog", "duration": "00:50", "desc": "Improves core stability and supports lower back health.", "img": "https://img.freepik.com/free-vector/man-practicing-breathing-exercise_23-2148530376.jpg"},
-            {"name": "Sphinx Pose", "duration": "00:50", "desc": "Gentle backbend that strengthens the spine and chest.", "img": "https://img.freepik.com/free-vector/woman-doing-cobra-yoga-pose_23-2148530378.jpg"},
-            {"name": "Child's Pose", "duration": "00:50", "desc": "Deep relaxation pose that calms the mind and relieves fatigue.", "img": "https://img.freepik.com/free-vector/person-sitting-vajrasana-yoga-pose_23-2148530379.jpg"},
-            {"name": "Relaxation Lying Pose", "duration": "01:00", "desc": "Final resting pose (Savasana) to integrate practice benefits.", "img": "https://img.freepik.com/free-vector/yoga-poses-collection_23-2148530377.jpg"}
+            {"name": "1. Seated Cat Cow", "duration": "00:50", "benefit": "Improves spine flexibility, posture, and relieves back tension."},
+            {"name": "2. Crescent Low Lunge Left", "duration": "00:40", "benefit": "Stretches hips, thighs, and groin while building lower body stability."},
+            {"name": "3. Half Locust Pose", "duration": "00:40", "benefit": "Strengthens back muscles, glutes, and the back of arms and legs."},
+            {"name": "4. Downward Facing Dog With Bent Knees", "duration": "00:50", "benefit": "Energizes the body, stretches shoulders, hamstrings, and calves."},
+            {"name": "5. Crescent Low Lunge Right", "duration": "00:40", "benefit": "Balances right-side body strength and improves hip mobility."},
+            {"name": "6. Bird Dog", "duration": "00:50", "benefit": "Improves core stability, coordination, and supports lower back health."},
+            {"name": "7. Sphinx Pose", "duration": "00:50", "benefit": "Gentle backbend that strengthens the spine and opens the chest."},
+            {"name": "8. Child's Pose", "duration": "00:50", "benefit": "Deep relaxation pose that calms the central nervous system and relieves fatigue."},
+            {"name": "9. Relaxation Lying Pose (Savasana)", "duration": "01:00", "benefit": "Final resting pose to integrate practice benefits and reduce stress."}
         ]
         
         for ex in exercises:
-            col1, col2 = st.columns([1, 2])
-            with col1:
-                st.image(ex["img"], width=120)
-            with col2:
-                st.markdown(f"**{ex['name']}**")
-                st.text(f"Duration: {ex['duration']}")
-                st.caption(ex['desc'])
+            st.markdown(f"#### **{ex['name']}**")
+            st.text(f"⏱️ Duration: {ex['duration']}")
+            st.markdown(f"💡 **Benefits:** {ex['benefit']}")
             st.divider()
             
         if st.button("START WORKOUT SESSION", use_container_width=True):
