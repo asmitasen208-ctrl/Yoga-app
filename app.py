@@ -1,4 +1,4 @@
- import streamlit as st
+import streamlit as st
 
 # Page Configuration
 st.set_page_config(page_title="Yoga App", layout="centered")
@@ -18,11 +18,10 @@ def prev_step():
         st.session_state.step -= 1
         st.rerun()
 
-# --- SLIDE 1: Welcome (Only Bold & Styled Tagline) ---
+# --- SLIDE 1: Welcome (No Image, Styled Text) ---
 if st.session_state.step == 1:
-    st.write("")
-    st.write("")
-    st.markdown("<h1 style='text-align: center; margin-top: 100px; color: #16A085; font-weight: bold;'>Yoga for better and healthy life</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; margin-top: 60px; color: #2C3E50;'>Yoga se sab hoga</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: #16A085; font-weight: bold;'>Yoga for better and healthy life</h3>", unsafe_allow_html=True)
     st.write("")
     st.write("")
     if st.button("Get Started", use_container_width=True):
@@ -160,7 +159,7 @@ elif st.session_state.step == 13:
     if st.button("Next", use_container_width=True):
         next_step()
 
-# --- SLIDE 14: Training Schedule & Day 1 Plan ---
+# --- SLIDE 14: Training Schedule & Day 1 Plan (No Images, Rich Benefits List) ---
 elif st.session_state.step == 14:
     st.markdown("<h2 style='text-align: center;'>With your personalized Plan</h2>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center;'>You'll be your target weight by Sep 14</h3>", unsafe_allow_html=True)
@@ -203,3 +202,4 @@ if st.session_state.step > 1:
     st.write("---")
     if st.button("⬅ Back"):
         prev_step()
+
