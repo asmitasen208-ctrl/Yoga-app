@@ -1,74 +1,52 @@
 import streamlit as st
 
 # App Configuration
-st.set_page_config(page_title="YogaForWeightGain", page_icon="🧘‍♀️", layout="centered")
+st.set_page_config(page_title="Yoga Personal Guide", page_icon="🧘‍♀️", layout="centered")
 
-# Custom CSS for styling
-st.markdown("""
-    <style>
-    .main-title {font-size: 30px; color: #FF4B4B; text-align: center; font-weight: bold;}
-    .sub-text {font-size: 16px; color: #333333; text-align: center;}
-    .card {background-color: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 15px;}
-    </style>
-""", unsafe_allow_html=True)
+st.markdown('<h1 style="text-align: center; color: #FF4B4B;">🧘‍♀️ Personalized Yoga & Diet Guide</h1>', unsafe_allow_html=True)
+st.write("Enter your details below to get your personalized health and wellness plan:")
 
-# App Header
-st.markdown('<p class="main-title">🧘‍♀️ Yoga & Wellness for Weight Gain</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-text">Build strength, improve digestion, and gain healthy weight naturally.</p>', unsafe_allow_html=True)
-st.divider()
+# User Inputs
+with st.container():
+    col1, col2 = st.columns(2)
+    with col1:
+        gender = st.selectbox("Gender", ["Female", "Male"])
+        age = st.number_input("Age", min_value=10, max_value=100, value=25)
+    with col2:
+        weight = st.number_input("Weight (kg)", min_value=20.0, max_value=200.0, value=50.0)
+        height = st.number_input("Height (cm)", min_value=100.0, max_value=250.0, value=160.0)
 
-# Sidebar Navigation
-menu = st.sidebar.selectbox("Choose a Section", ["Home", "Asanas for Weight Gain", "Diet & Nutrition", "BMI Calculator"])
+if st.button("Generate My Plan"):
+    height_m = height / 100
+    bmi = weight / (height_m ** 2)
+    
+    st.divider()
+    st.subheader(f"Result: Your BMI is {bmi:.1f}")
 
-if menu == "Home":
-    st.subheader("Welcome to Your Personal Yoga Journey!")
-    st.write("""
-    Unlike weight loss apps focused purely on calorie deficit, **Weight Gain Yoga** focuses on:
-    * Improving overall digestion and nutrient absorption.
-    * Building muscle mass through restorative and strength-building poses.
-    * Reducing stress and balancing hormones to support healthy growth.
-    """)
+    if bmi < 18.5:
+        st.warning("You are in the Underweight category.")
+        st.markdown("### 🌟 Yoga for Weight Gain")
+        st.write("- **Bhujangasana (Cobra Pose):** Helps improve metabolism and strengthens the spine.")
+        st.write("- **Vajrasana (Thunderbolt Pose):** Best practiced after meals to boost digestion.")
+        st.markdown("### 🥗 Recommended Diet")
+        st.write("- Include healthy fats like ghee, nuts, and seeds.")
+        st.write("- Eat protein-rich foods like paneer, lentils, and dairy products.")
 
-elif menu == "Asanas for Weight Gain":
-    st.subheader("🌟 Recommended Asanas")
+    elif 18.5 <= bmi < 24.9:
+        st.success("You have a Normal and Healthy weight!")
+        st.markdown("### 🌟 Yoga for Maintenance")
+        st.write("- **Surya Namaskar (Sun Salutation):** Great for overall body flexibility and fitness.")
+        st.write("- **Tadasana (Mountain Pose):** Excellent for posture and stability.")
+        st.markdown("### 🥗 Recommended Diet")
+        st.write("- Maintain a balanced diet with fresh fruits, vegetables, and whole grains.")
 
-    asanas = {
-        "1. Bhujangasana (Cobra Pose)": "Strengthens the spine, opens the chest, and improves metabolism and digestion.",
-        "2. Sarvangasana (Shoulder Stand)": "Stimulates the thyroid gland which regulates metabolism and body weight.",
-        "3. Paschimottanasana (Seated Forward Bend)": "Massages abdominal organs, improves appetite, and relieves stress.",
-        "4. Vajrasana (Thunderbolt Pose)": "Best pose to practice right after meals to boost digestion and nutrient uptake.",
-        "5. Trikonasana (Triangle Pose)": "Improves balance, stretches the body, and helps build stamina and strength."
-    }
+    else:
+        st.info("You are in the Overweight category.")
+        st.markdown("### 🌟 Yoga for Weight Loss")
+        st.write("- **Kapalbhati Pranayama:** Boosts metabolism and aids in fat burning.")
+        st.write("- **Dhanurasana (Bow Pose):** Massages abdominal organs and helps reduce belly fat.")
+        st.markdown("### 🥗 Recommended Diet")
+        st.write("- Increase intake of high-fiber foods, salads, and green vegetables.")
+        st.write("- Avoid processed sugars, junk food, and excessive oils.")
 
-    for title, desc in asanas.items():
-        with st.container():
-            st.markdown(f"### {title}")
-            st.write(desc)
-            st.markdown("---")
-
-elif menu == "Diet & Nutrition":
-    st.subheader("🥗 Healthy Weight Gain Diet Tips")
-    st.info("Yoga works best when paired with a nutrient-dense, calorie-surplus diet!")
-    st.markdown("""
-    * **Healthy Fats:** Include avocados, nuts, seeds, and ghee in your daily meals.
-    * **Protein Rich Foods:** Paneer, lentils, tofu, and dairy products to support muscle building.
-    * **Complex Carbs:** Sweet potatoes, brown rice, and oats for sustained energy.
-    * **Hydration:** Drink plenty of water and herbal teas to keep your digestive tract healthy.
-    """)
-
-elif menu == "BMI Calculator":
-    st.subheader("📊 Check Your Body Mass Index (BMI)")
-    weight = st.number_input("Enter your weight (kg)", min_value=20.0, max_value=200.0, value=50.0)
-    height = st.number_input("Enter your height (cm)", min_value=100.0, max_value=250.0, value=160.0)
-
-    if st.button("Calculate BMI"):
-        height_m = height / 100
-        bmi = weight / (height_m ** 2)
-        st.success(f"Your BMI is: **{bmi:.2f}**")
-
-        if bmi < 18.5:
-            st.warning("You are in the underweight category. This app's yoga routines will help you gain healthy weight!")
-        elif 18.5 <= bmi < 24.9:
-            st.success("You have a normal and healthy weight!")
-        else:
-            st.info("You are in the overweight category.")
+st.sidebar.info("This application is designed for general wellness guidance. Consult a professional before starting any new fitness routine.")
