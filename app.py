@@ -1,57 +1,193 @@
 import streamlit as st
 import datetime
 
-st.set_page_config(page_title="Wellness Pro", layout="centered")
+# Page Configuration
+st.set_page_config(page_title="Yoga App", layout="centered")
 
-st.markdown("<h1 style='text-align: center;'>🧘‍♀️ Wellness Pro Guide</h1>", unsafe_allow_html=True)
+# Initialize Session State for Flow Control
+if 'step' not in st.session_state:
+    st.session_state.step = 1
+if 'data' not in st.session_state:
+    st.session_state.data = {}
 
-# Session State for Progress
-if 'completed_days' not in st.session_state:
-    st.session_state.completed_days = 0
+def next_step():
+    st.session_state.step += 1
 
-tab1, tab2, tab3, tab4 = st.tabs(["Plan", "Tracker", "Daily Alarm", "Water"])
+def prev_step():
+    if st.session_state.step > 1:
+        st.session_state.step -= 1
 
-asana_data = {
-    "Surya Namaskar": {"desc": "12 steps of sun salutation. Improves overall flexibility.", "img": "https://img.freepik.com/free-vector/yoga-poses-collection_23-2148530377.jpg"},
-    "Tadasana": {"desc": "Mountain Pose: Stand tall, ground your feet, reach for the sky.", "img": "https://img.freepik.com/free-vector/woman-practicing-tadasana-yoga-pose_23-2148530375.jpg"},
-    "Kapalbhati": {"desc": "Breathing exercise: Forceful exhalation to detoxify.", "img": "https://img.freepik.com/free-vector/man-practicing-breathing-exercise_23-2148530376.jpg"},
-    "Bhujangasana": {"desc": "Cobra Pose: Lie on stomach, lift chest, arch back gently.", "img": "https://img.freepik.com/free-vector/woman-doing-cobra-yoga-pose_23-2148530378.jpg"},
-    "Vajrasana": {"desc": "Thunderbolt Pose: Sit on heels, keep spine erect.", "img": "https://img.freepik.com/free-vector/person-sitting-vajrasana-yoga-pose_23-2148530379.jpg"}
-}
+# --- SLIDE 1: Welcome ---
+if st.session_state.step == 1:
+    st.image("https://img.freepik.com/free-photo/young-woman-practicing-yoga-beach_23-2148759530.jpg", use_container_width=True)
+    st.markdown("<h1 style='text-align: center;'>Yoga For Weight Loss</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: gray;'>Yoga for better and healthy life</h3>", unsafe_allow_html=True)
+    if st.button("Get Started", use_container_width=True):
+        next_step()
 
-with tab1:
-    st.subheader("Transformation Tracker")
-    st.image(st.file_uploader("Upload your 'Before' Photo", type=['jpg', 'png']), caption="Your Starting Point")
+# --- SLIDE 2: Move Gently ---
+elif st.session_state.step == 2:
+    st.markdown("<h2 style='text-align: center;'>Move Gently, Improve Rapidly</h2>", unsafe_allow_html=True)
+    st.write("---")
+    options = ["Improve Health", "Sleep Better", "Clear Mind", "Stay Young"]
+    selected_option = st.radio("What would you like to focus on?", options)
+    if st.button("Next", use_container_width=True):
+        st.session_state.data['focus'] = selected_option
+        next_step()
+
+# --- SLIDE 4: Main Goal ---
+elif st.session_state.step == 4:
+    st.markdown("<h2 style='text-align: center;'>What's your main goal?</h2>", unsafe_allow_html=True)
+    goals = ["Lose Weight", "Keep Fit", "Relax & Unwind", "Flexibility", "Recovery"]
+    st.session_state.data['goal'] = st.radio("Select your main goal:", goals)
+    if st.button("Next", use_container_width=True):
+        next_step()
+
+# --- SLIDE 5: Present Shape ---
+elif st.session_state.step == 5:
+    st.markdown("<h2 style='text-align: center;'>What's your current body shape?</h2>", unsafe_allow_html=True)
+    st.session_state.data['body_fat'] = st.slider("Your estimated body fat (%)", 15, 40, 30)
+    st.info(f"Estimated Body Fat: **{st.session_state.data['body_fat']}%**")
+    if st.button("Next", use_container_width=True):
+        next_step()
+
+# --- SLIDE 6: Help Screen ---
+elif st.session_state.step == 6:
+    st.markdown("<h2 style='text-align: center;'>We're here to help people like you!</h2>", unsafe_allow_html=True)
+    st.success("83% of our users rated our customized yoga programs as easy to follow and have achieved excellent results with practice.")
+    if st.button("Next", use_container_width=True):
+        next_step()
+
+# --- SLIDE 7: Gender ---
+elif st.session_state.step == 7:
+    st.markdown("<h2 style='text-align: center;'>What's your gender?</h2>", unsafe_allow_html=True)
+    st.session_state.data['gender'] = st.radio("Select gender:", ["Male", "Female", "Prefer not to say"])
+    if st.button("Next", use_container_width=True):
+        next_step()
+
+# --- SLIDE 8: Age ---
+elif st.session_state.step == 8:
+    st.markdown("<h2 style='text-align: center;'>How old are you?</h2>", unsafe_allow_html=True)
+    st.session_state.data['age'] = st.number_input("Enter your age", 10, 100, 30)
+    if st.button("Next", use_container_width=True):
+        next_step()
+
+# --- SLIDE 9: Height ---
+elif st.session_state.step == 9:
+    st.markdown("<h2 style='text-align: center;'>What's your height?</h2>", unsafe_allow_html=True)
+    height = st.slider("Height (cm)", 100, 220, 165)
+    st.session_state.data['height'] = height
+    if st.button("Next", use_container_width=True):
+        next_step()
+
+# --- SLIDE 10: Current Weight & BMI ---
+elif st.session_state.step == 10:
+    st.markdown("<h2 style='text-align: center;'>What's your current weight?</h2>", unsafe_allow_html=True)
+    weight_kg = st.number_input("Weight (kg)", 30.0, 200.0, 70.0)
+    st.session_state.data['current_weight'] = weight_kg
     
-    if st.session_state.completed_days >= 30:
-        st.image(st.file_uploader("Upload your 'After' Photo (Congrats!)", type=['jpg', 'png']), caption="Your Result")
-    else:
-        st.info(f"Complete 30 days of yoga to unlock the 'After' photo upload. Current streak: {st.session_state.completed_days}/30")
-
-with tab2:
-    st.subheader("Weekly Exercise Tracker")
-    schedule = [("Day 1", "Surya Namaskar"), ("Day 2", "Tadasana"), ("Day 3", "Kapalbhati"), 
-                ("Day 4", "REST"), ("Day 5", "Bhujangasana"), ("Day 6", "Vajrasana"), ("Day 7", "REST")]
-    
-    for day, name in schedule:
-        with st.expander(f"{day}: {name}"):
-            if st.checkbox(f"Completed {name}?", key=f"done_{day}"):
-                st.session_state.completed_days += 1
-                st.success("Great! Don't forget your 2-minute break.")
-                st.balloons()
+    if 'height' in st.session_state.data:
+        height_m = st.session_state.data['height'] / 100
+        bmi = weight_kg / (height_m ** 2)
+        st.session_state.data['bmi'] = bmi
+        
+        if bmi < 18.5:
+            bmi_status = "Underweight"
+            msg = "You may need to focus on gaining healthy mass!"
+        elif 18.5 <= bmi < 25:
+            bmi_status = "Healthy"
+            msg = "You are in good shape!"
+        elif 25 <= bmi < 30:
+            bmi_status = "Overweight"
+            msg = "You may need to do more workouts to be better and healthier!"
+        else:
+            bmi_status = "Obesity"
+            msg = "You may need to do more workouts to be better and healthier!"
             
-            if name != "REST":
-                st.image(asana_data[name]['img'], width=250)
-                st.write(f"**Guide:** {asana_data[name]['desc']}")
-                st.warning("⚠️ Mandatory: Take a 2-minute break after this!")
+        st.warning(f"**Your BMI: {bmi:.1f} ({bmi_status})**\n\n{msg}")
+        
+    if st.button("Next", use_container_width=True):
+        next_step()
 
-with tab3:
-    st.subheader("⏰ Set Yoga Reminder")
-    # Using time_input which handles AM/PM based on system locale
-    alarm = st.time_input("Choose your preferred time", datetime.time(8, 0))
-    st.write(f"Notification set for: **{alarm.strftime('%I:%M %p')}**")
+# --- SLIDE 11: Target Weight ---
+elif st.session_state.step == 11:
+    st.markdown("<h2 style='text-align: center;'>Do you have a target weight?</h2>", unsafe_allow_html=True)
+    target_weight = st.slider("Target Weight (kg)", 30.0, 150.0, 55.0)
+    st.session_state.data['target_weight'] = target_weight
+    
+    if target_weight < 45.0:
+        st.error("⚠️ **Attention!** It seems that your target BMI is too low, which might cause some health problems...")
+        
+    if st.button("Next", use_container_width=True):
+        next_step()
 
-with tab4:
-    st.subheader("💧 Water Tracker")
-    water = st.slider("Glasses of water today", 0, 12, 0)
-    st.progress(water / 12)
+# --- SLIDE 12: Assessment & Prediction Date ---
+elif st.session_state.step == 12:
+    st.markdown("<h2 style='text-align: center;'>Your goal is closer than expected!</h2>", unsafe_allow_html=True)
+    target_wt = st.session_state.data.get('target_weight', 55.0)
+    st.markdown(f"<h3 style='text-align: center; color: purple;'>{target_wt} kg by Oct 12</h3>", unsafe_allow_html=True)
+    st.info("🔥 **14 Days Early!** Your personalized plan will put you on track to reach your goal earlier—exciting potential!")
+    if st.button("Next", use_container_width=True):
+        next_step()
+
+# --- SLIDE 13: Yoga Experience ---
+elif st.session_state.step == 13:
+    st.markdown("<h2 style='text-align: center;'>Have you practiced yoga before?</h2>", unsafe_allow_html=True)
+    experience_options = [
+        "Never practiced before (I'd like to start here)",
+        "Practiced several times (I can do some gentle poses)",
+        "I'm experienced (I can perform advanced poses)"
+    ]
+    st.session_state.data['experience'] = st.radio("Select your level:", experience_options)
+    if st.button("Next", use_container_width=True):
+        next_step()
+
+# --- SLIDE 14: Training Schedule & Day 1 Plan ---
+elif st.session_state.step == 14:
+    st.markdown("<h2 style='text-align: center;'>With your personalized Plan</h2>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>You'll be your target weight by Sep 14</h3>", unsafe_allow_html=True)
+    st.write("86% of users in a similar situation to you have lost weight with a personalized 30-day yoga plan.")
+    
+    st.write("---")
+    st.subheader("Training Schedule (September)")
+    
+    # Interactive calendar simulation for day selection
+    selected_day = st.selectbox("Select date to view routine:", [18, 19, 20, 21, 22, 23, 24], index=0)
+    
+    if selected_day == 18:
+        st.markdown("### 🧘 Day 1 Workout Routine")
+        
+        exercises = [
+            {"name": "Seated Cat Cow", "duration": "00:50", "desc": "Improves spine flexibility and relieves back tension.", "img": "https://img.freepik.com/free-vector/woman-practicing-yoga-pose_23-2148530375.jpg"},
+            {"name": "Crescent Low Lunge Left", "duration": "00:40", "desc": "Stretches hips, thighs, and groin. Builds lower body strength.", "img": "https://img.freepik.com/free-vector/yoga-poses-collection_23-2148530377.jpg"},
+            {"name": "Half Locust Pose", "duration": "00:40", "desc": "Strengthens back muscles, glutes, and back of the arms and legs.", "img": "https://img.freepik.com/free-vector/woman-doing-cobra-yoga-pose_23-2148530378.jpg"},
+            {"name": "Downward Facing Dog With Bent Knees", "duration": "00:50", "desc": "Energizes the body, stretches shoulders, hamstrings, and calves.", "img": "https://img.freepik.com/free-vector/person-sitting-vajrasana-yoga-pose_23-2148530379.jpg"},
+            {"name": "Crescent Low Lunge Right", "duration": "00:40", "desc": "Balances right side body strength and hip openness.", "img": "https://img.freepik.com/free-vector/yoga-poses-collection_23-2148530377.jpg"},
+            {"name": "Bird Dog", "duration": "00:50", "desc": "Improves core stability and supports lower back health.", "img": "https://img.freepik.com/free-vector/man-practicing-breathing-exercise_23-2148530376.jpg"},
+            {"name": "Sphinx Pose", "duration": "00:50", "desc": "Gentle backbend that strengthens the spine and chest.", "img": "https://img.freepik.com/free-vector/woman-doing-cobra-yoga-pose_23-2148530378.jpg"},
+            {"name": "Child's Pose", "duration": "00:50", "desc": "Deep relaxation pose that calms the mind and relieves fatigue.", "img": "https://img.freepik.com/free-vector/person-sitting-vajrasana-yoga-pose_23-2148530379.jpg"},
+            {"name": "Relaxation Lying Pose", "duration": "01:00", "desc": "Final resting pose (Savasana) to integrate practice benefits.", "img": "https://img.freepik.com/free-vector/yoga-poses-collection_23-2148530377.jpg"}
+        ]
+        
+        for ex in exercises:
+            col1, col2 = st.columns([1, 2])
+            with col1:
+                st.image(ex["img"], width=120)
+            with col2:
+                st.markdown(f"**{ex['name']}**")
+                st.text(f"Duration: {ex['duration']}")
+                st.caption(ex['desc'])
+            st.divider()
+            
+        if st.button("START WORKOUT SESSION", use_container_width=True):
+            st.balloons()
+            st.success("Session Started Successfully! Enjoy your practice.")
+    else:
+        st.info(f"Routine for September {selected_day} will unlock sequentially. Please check Day 1 (18th).")
+
+# Back button navigation utility at the bottom
+if st.session_state.step > 1:
+    st.write("---")
+    if st.button("⬅ Back"):
+        prev_step()
+        st.rerun()
