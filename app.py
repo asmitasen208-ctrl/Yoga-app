@@ -74,12 +74,23 @@ with tab2:
     
     st.divider()
     
-    # Alarm & Schedule Section
-    st.subheader("🔔 Set Daily Yoga Alarm & Rest Days")
-    alarm_time = st.time_input("Select Daily Notification/Alarm Time")
-    rest_days = st.multiselect("Select Days to Rest (No Yoga):", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], default=["Sunday"])
-    if st.button("Save Schedule & Alarm"):
-        st.success(f"Alarm set for {alarm_time.strftime('%H:%M')} daily! Rest days scheduled: {', '.join(rest_days)}.")
+    # Alarm & Schedule Section with AM/PM format support
+    st.subheader("🔔 Set Daily Yoga Alarm & Schedule")
+    
+    col_a1, col_a2 = st.columns(2)
+    with col_a1:
+        alarm_hour = st.selectbox("Hour", [str(i) for i in range(1, 13)], index=5) # Default 6
+        alarm_minute = st.selectbox("Minute", ["00", "15", "30", "45"])
+        ampm = st.selectbox("AM / PM", ["AM", "PM"])
+    with col_a2:
+        st.write("")
+        st.write("")
+        # Client selects workout vs rest days manually here
+        workout_days = st.multiselect("Select Yoga Days:", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], default=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"])
+        rest_days = st.multiselect("Select Rest Days:", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], default=["Sunday"])
+
+    if st.button("Save My Custom Schedule"):
+        st.success(f"Alarm set for {alarm_hour}:{alarm_minute} {ampm}!\nYoga Days: {', '.join(workout_days)} | Rest Days: {', '.join(rest_days)}")
 
 with tab3:
     st.subheader("⏱️ Daily Workout Timer")
@@ -113,6 +124,7 @@ with tab4:
 with tab5:
     st.subheader("🎥 AI Video & Audio Guided Yoga")
     st.markdown("### 🌊 Calm Ocean & Relaxation Music")
+    st.write("Play button dabakar background music chalu karein:")
     st.audio("https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=gentle-waves-ambient-111242.mp3", format="audio/mp3")
     
     st.markdown("---")
